@@ -80,6 +80,7 @@ def heal():
             auto.press('1')
             time.sleep(1)
 
+
 def mana():
     while True:
         mana_full = auto.pixelMatchesColor(constants.MANA99_X, constants.MANA_Y, constants.MANA_RGB_BLUE, tolerance=1)
@@ -131,21 +132,21 @@ def singleTarget():
 def loot():
     while True:
         if not monster():
-            loot = auto.locateAllOnScreen('./assets/loot7.png', confidence=constants.LOOT_CONFIDENCE) or auto.locateAllOnScreen('./assets/loot6.png', confidence=constants.LOOT_CONFIDENCE) or auto.locateAllOnScreen('./assets/loot5.png', confidence=constants.LOOT_CONFIDENCE)
+            loot = auto.locateAllOnScreen('./assets/wasp/loot.png', confidence=constants.LOOT_CONFIDENCE)
             if loot:
                 for box in loot:
                     x, y = auto.center(box)
                     auto.rightClick(x, y)
-                    time.sleep(0.2)
+                    time.sleep(1)
 
-                    dropped = auto.locateOnScreen('./assets/loot_dropped', confidence=0.9, region=constants.REGION_CHAT)
+                    dropped = auto.locateOnScreen('./assets/wasp/loot_dropped.png', confidence=0.9, region=constants.REGION_CHAT)
                     if dropped:
-                        item1 = auto.locateOnScreen('./assets/loot_elven_hoof.png', confidence=0.9, region=constants.REGION_LOOT)
+                        item1 = auto.locateOnScreen('./assets/wasp/loot_dropped.png', confidence=0.9, region=constants.REGION_LOOT)
                         if item1:
                             x, y = auto.center(item1)
                             auto.moveTo(x, y)
                             time.sleep(0.2)
-                            auto.dragTo(constants.LOOT_BP2_XY, button='left')
+                            auto.dragTo(constants.LOOT_BP1_XY, button='left')
                         time.sleep(2)
 
 
@@ -191,11 +192,11 @@ def main():
     job_thread4 = threading.Thread(target=food, name='food')
     job_thread4.start()
 
-    job_thread5 = threading.Thread(target=poison, name='poison')
-    job_thread5.start()
+    # job_thread5 = threading.Thread(target=poison, name='poison')
+    # job_thread5.start()
 
-    job_thread6 = threading.Thread(target=ring, name='ring')
-    job_thread6.start()
+    # job_thread6 = threading.Thread(target=ring, name='ring')
+    # job_thread6.start()
 
     job_thread7 = threading.Thread(target=mana, name='mana')
     job_thread7.start()
