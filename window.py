@@ -6,7 +6,7 @@ WS_EX_LAYERED = 0x00080000
 LWA_ALPHA = 0x00000002
 
 OPACITY = 1 # 0 -- 255
-WINDOW_TITLE = "Tibia - Lone Pally"
+WINDOW_TITLE = "Tibia - Humgolf" #NAME OF CHARACTER
 target_window = gw.getWindowsWithTitle(WINDOW_TITLE)[0]
 
 if target_window is not None:

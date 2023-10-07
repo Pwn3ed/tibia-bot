@@ -1,13 +1,5 @@
-# from PIL import Image
-# from PIL import ImageGrab
-# from PIL import ImageChops
-# import pytesseract as ocr
-import numpy as np
-# import cv2
 import pyautogui as auto
 import threading
-import multiprocessing as mp
-import schedule
 import time
 import constants
 
@@ -29,8 +21,8 @@ def anti_logout():
         # key('w')
         # key('s')
         # auto.keyUp('ctrl')
-        mouse(1000, 530)
-        mouse(850, 530)
+        mouse(930, 500)
+        mouse(780, 500)
         time.sleep(120)
 
 
@@ -132,22 +124,38 @@ def singleTarget():
 def loot():
     while True:
         if not monster():
-            loot = auto.locateAllOnScreen('./assets/wasp/loot.png', confidence=constants.LOOT_CONFIDENCE)
-            if loot:
-                for box in loot:
-                    x, y = auto.center(box)
-                    auto.rightClick(x, y)
-                    time.sleep(1)
+            dropped = auto.locateOnScreen('./assets/loot_dropped.png', confidence=0.9, region=constants.REGION_CHAT)
+            if dropped:
+                print('dropped')
+                loot = auto.locateAllOnScreen('./assets/wasp/loot.png', confidence=constants.LOOT_CONFIDENCE)
+                if loot:
+                    for box in loot:
+                        x, y = auto.center(box)
+                        auto.rightClick(x, y)
+                        time.sleep(3)
 
-                    dropped = auto.locateOnScreen('./assets/wasp/loot_dropped.png', confidence=0.9, region=constants.REGION_CHAT)
-                    if dropped:
-                        item1 = auto.locateOnScreen('./assets/wasp/loot_dropped.png', confidence=0.9, region=constants.REGION_LOOT)
+                        item1 = auto.locateOnScreen('./assets/wasp/loot_honeycomb.png', confidence=0.9, region=constants.REGION_LOOT)
                         if item1:
                             x, y = auto.center(item1)
                             auto.moveTo(x, y)
                             time.sleep(0.2)
                             auto.dragTo(constants.LOOT_BP1_XY, button='left')
-                        time.sleep(2)
+            time.sleep(2)
+
+
+def loot_afk():
+    while True:
+        auto.keyDown('shift')
+        auto.rightClick(858, 418)
+        auto.rightClick(928, 422)
+        auto.rightClick(935, 489)
+        auto.rightClick(928, 567)
+        auto.rightClick(860, 569)
+        auto.rightClick(780, 569)
+        auto.rightClick(783, 497)
+        auto.rightClick(780, 441)
+        auto.keyUp('shift')
+        time.sleep(30)
 
 
 def food():
@@ -176,21 +184,44 @@ def ring():
             time.sleep(1)
 
 
+def cavebot():
+    waypoint = 0
+    while True:
+        flags = auto.locateAllOnScreen('./assets/flag.png', confidence=0.9, region=constants.REGION_MAP)
+        for flag in flags:
+            print(flag)
+            x, y = auto.center(flag)
+            auto.click(x, y)
+            waypoint += 1
+            time.sleep(1)
+        waypoint = 0
+
+
+def anti_escape():
+    while True:
+        surface = auto.locateOnScreen('./assets/wasp/map_surface.png', confidence=0.8, region=constants.REGION_MAP)
+        if (surface):
+            # exit game
+            auto.click(1895, 12)
+            time.sleep(0.2)
+            auto.click(1108, 573)
+        time.sleep(5)
+
 def main():
     print('... starting ...')
     click_tibia()
 
-    job_thread1 = threading.Thread(target=heal, name='heal')
-    job_thread1.start()
+    # job_thread1 = threading.Thread(target=heal, name='heal')
+    # job_thread1.start()
 
     job_thread2 = threading.Thread(target=attack, name='attack')
     job_thread2.start()
 
-    job_thread3 = threading.Thread(target=loot, name='loot')
-    job_thread3.start()
+    # job_thread3 = threading.Thread(target=loot, name='loot')
+    # job_thread3.start()
 
-    job_thread4 = threading.Thread(target=food, name='food')
-    job_thread4.start()
+    # job_thread4 = threading.Thread(target=food, name='food')
+    # job_thread4.start()
 
     # job_thread5 = threading.Thread(target=poison, name='poison')
     # job_thread5.start()
@@ -198,8 +229,20 @@ def main():
     # job_thread6 = threading.Thread(target=ring, name='ring')
     # job_thread6.start()
 
-    job_thread7 = threading.Thread(target=mana, name='mana')
-    job_thread7.start()
+    # job_thread7 = threading.Thread(target=mana, name='mana')
+    # job_thread7.start()
+
+    # job_thread8 = threading.Thread(target=cavebot, name='cavebot')
+    # job_thread8.start()
+
+    job_thread9 = threading.Thread(target=anti_logout, name='anti_logout')
+    job_thread9.start()
+
+    job_thread10 = threading.Thread(target=loot_afk, name='loot_afk')
+    job_thread10.start()
+
+    job_thread11 = threading.Thread(target=anti_escape, name='anti_escape')
+    job_thread11.start()
 
 
 main()
